@@ -2,6 +2,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+
 
 public class AppLux {
 
@@ -65,6 +67,7 @@ public class AppLux {
 		iconMap.put("fire", new ImageIcon(getClass().getResource("imgs/luxFire.png")));corMap.put("fire", new Color(235, 131, 52));
 		iconMap.put("water", new ImageIcon(getClass().getResource("imgs/luxWater.png")));corMap.put("water", new Color(97, 162, 237));
 		iconMap.put("nature", new ImageIcon(getClass().getResource("imgs/luxNature.png")));corMap.put("nature", new Color(52, 235, 79));
+		iconMap.put("light", new ImageIcon(getClass().getResource("imgs/light.png")));corMap.put("light", new Color(255, 255, 255));
 		//starta o frame
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(255, 255, 255));
@@ -74,9 +77,21 @@ public class AppLux {
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		
-		///iconElementalist.jpeg
+		///iconL
 		ImageIcon iconElementalist = new ImageIcon(getClass().getResource("imgs/LoL_Icon_Flat_GOLD.png"));
 		frame.setIconImage(iconElementalist.getImage());
+		
+		//start jpanel
+		panel = new JPanel();
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setBounds(110, 117, 150, 130);
+		frame.getContentPane().add(panel);
+		ImageIcon iconLight = new ImageIcon(getClass().getResource("imgs/light.png"));
+		JLabel label = new JLabel(iconLight);
+		label.setBackground(new Color(255, 255, 255));
+		panel.add(label);
+        panel.revalidate();
+        panel.repaint();
 		
 		//WATER
 		waterButton = new JRadioButton("Water");
@@ -108,19 +123,30 @@ public class AppLux {
 		button.setFont(new Font("Yu Gothic UI Semilight",  Font.BOLD, 16));
 		button.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        if (airButton.isSelected() && fireButton.isSelected()) {
+		    	if ((airButton.isSelected() && fireButton.isSelected() &&
+		    		waterButton.isSelected() && natureButton.isSelected()) 
+		    		|| (airButton.isSelected() && fireButton.isSelected() && waterButton.isSelected())
+		    		|| (airButton.isSelected() && fireButton.isSelected() && natureButton.isSelected())
+		    		|| (airButton.isSelected() && natureButton.isSelected() && waterButton.isSelected())
+		    		|| (fireButton.isSelected() && natureButton.isSelected() && waterButton.isSelected())) {
+		    		JOptionPane.showMessageDialog(panel, "Você não pode selecionar o mesmo elemento duas vezes.", "Erro", JOptionPane.ERROR_MESSAGE);
+		            airButton.setSelected(false);
+		            waterButton.setSelected(false);
+		            fireButton.setSelected(false);
+		            natureButton.setSelected(false);
+		    	}
+		    		
+		    	else if (airButton.isSelected() && fireButton.isSelected()) {
 		            displayChange("storm");
 		        } 
 		        else if (airButton.isSelected() && waterButton.isSelected()) {
 		            displayChange("ice");
 		        } 
 		        else if (airButton.isSelected() && natureButton.isSelected()) {
-		            displayChange("dark");
-		            
+		            displayChange("dark");	      
 		        } 
 		        else if (fireButton.isSelected() && waterButton.isSelected()) {
-		            displayChange("dark");
-		            
+		            displayChange("dark"); 
 		        } 
 		        else if (fireButton.isSelected() && natureButton.isSelected()) {
 		            displayChange("magma");
@@ -141,27 +167,17 @@ public class AppLux {
 		            displayChange("nature");
 		        } 
 		        else {
-		            // Nenhum botão selecionado, limpar o painel
-		            panel.removeAll();
-		            panel.revalidate();
-		            panel.repaint();
-		        }	
+		            // Nenhum botão selecionado, set default (light skin)
+		            displayChange("light");
+		        }
+		    	
 			}
+		    
 		});
 		
 		button.setBounds(144, 274, 89, 23);
 		frame.getContentPane().add(button);
-		
-		panel = new JPanel();
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(110, 117, 139, 130);
-		frame.getContentPane().add(panel);
-		ImageIcon iconLight = new ImageIcon(getClass().getResource("imgs/light.png"));
-		JLabel label = new JLabel(iconLight);
-		label.setBackground(new Color(255, 255, 255));
-		panel.add(label);
-        panel.revalidate();
-        panel.repaint();
+
 	}
 	private void displayChange(String luxFormName) {
 		ImageIcon icon = iconMap.get(luxFormName);
@@ -183,7 +199,6 @@ public class AppLux {
         airButton.setBackground(cor);
         waterButton.setBackground(cor);
         fireButton.setBackground(cor);
-        natureButton.setBackground(cor);
-        
+        natureButton.setBackground(cor);       
 	}
 }
